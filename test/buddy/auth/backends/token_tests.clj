@@ -96,7 +96,7 @@
       (is (= (:status response) 401))
       (is (= (:body response) "Unauthorized"))))
 
-  (testing "Jws token authorization with authenticated but unathorized thrown yields 403"
+  (testing "Jws token authorization with authenticated but unauthorized thrown yields 403"
     (let [request (make-jws-request {:userid 1} jws-secret)
           handler (-> (fn [req] (throw-unauthorized))
                       (wrap-authorization jws-backend)
@@ -105,7 +105,7 @@
       (is (= (:status response) 403))
       (is (= (:body response) "Permission denied"))))
 
-  (testing "Jws token unathorized with :unauthorized-handlercalled when provided"
+  (testing "Jws token unauthorized with :unauthorized-handlercalled when provided"
     (let [request (make-jws-request jws-data "wrong-key")
           onerror (fn [_ _] {:status 3000})
           backend (backends/jws {:secret jws-secret
@@ -193,7 +193,7 @@
           response (handler request)]
       (is (= (:status response) 401))))
 
-  (testing "Jwe token authorization with authenticated but unathorized thrown yields 403"
+  (testing "Jwe token authorization with authenticated but unauthorized thrown yields 403"
     (let [request (make-jwe-request {:userid 1} jwe-secret)
           handler (-> (fn [req] (throw-unauthorized))
                       (wrap-authorization jwe-backend)
@@ -201,7 +201,7 @@
           response (handler request)]
       (is (= (:status response) 403))))
 
-  (testing "Jwe token unathorized with unauth handler called when provided"
+  (testing "Jwe token unauthorized with unauth handler called when provided"
     (let [request (make-jwe-request jwe-data (hash/sha256 "wrong-key"))
           onerror (fn [_ _] {:status 3000})
           backend (backends/jwe {:secret jwe-secret
